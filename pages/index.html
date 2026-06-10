@@ -3,432 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maine Democratic Gubernatorial Primary - RCV Simulator</title>
+    <title>North Yarmouth Notebook - Maine RCV Analysis</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            scroll-behavior: smooth;
+        }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+<body class="bg-slate-50 text-slate-800 font-sans">
 
-    <header class="bg-slate-900 text-white py-6 shadow-md border-b border-slate-700">
+    <!-- Navigation Header -->
+    <nav class="bg-white shadow-md sticky top-0 z-50 border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Maine Democratic Gubernatorial Primary</h1>
-            <p class="text-slate-400 text-sm md:text-base mt-1 font-medium">Ranked Choice Voting (RCV) Interactive Runoff Model</p>
-        </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <div class="bg-blue-50 border-l-4 border-blue-600 rounded-r-xl p-4 mb-8 shadow-sm">
-            <div class="flex items-start">
-                <div class="flex-shrink-0 text-blue-600 font-bold text-xl mr-3">ℹ️</div>
-                <div>
-                    <h2 class="text-sm font-bold text-blue-900 uppercase tracking-wider">Current Election Status (86% Reported)</h2>
-                    <p class="text-sm text-blue-800 mt-1">
-                        Nirav D. Shah leads initial first-choice selections with <strong>26.9%</strong>. Because no candidate crossed the <strong>50% majority threshold</strong>, the race triggers Maine's automatic Ranked Choice Voting sequence. Use the panel below to simulate voter backup choices.
-                    </p>
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo/Brand -->
+                <div class="flex items-center space-x-2">
+                    <div class="text-2xl font-bold text-slate-900">📓</div>
+                    <div>
+                        <h1 class="text-lg font-bold text-slate-900">North Yarmouth Notebook</h1>
+                        <p class="text-xs text-slate-500">Maine RCV Analysis</p>
+                    </div>
                 </div>
+
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-slate-700 hover:text-slate-900 font-medium transition">Home</a>
+                    <a href="#democratic" class="text-slate-700 hover:text-blue-600 font-medium transition">Democratic Primary</a>
+                    <a href="#republican" class="text-slate-700 hover:text-red-600 font-medium transition">Republican Primary</a>
+                    <a href="#about" class="text-slate-700 hover:text-slate-900 font-medium transition">About RCV</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-slate-100 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden pb-4 space-y-2">
+                <a href="#home" class="block px-4 py-2 text-slate-700 hover:bg-slate-100 rounded transition">Home</a>
+                <a href="#democratic" class="block px-4 py-2 text-slate-700 hover:bg-blue-50 rounded transition">Democratic Primary</a>
+                <a href="#republican" class="block px-4 py-2 text-slate-700 hover:bg-red-50 rounded transition">Republican Primary</a>
+                <a href="#about" class="block px-4 py-2 text-slate-700 hover:bg-slate-100 rounded transition">About RCV</a>
             </div>
         </div>
+    </nav>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            <div class="lg:col-span-5 space-y-6">
+    <!-- Hero Section -->
+    <section id="home" class="bg-gradient-to-r from-blue-600 to-slate-900 text-white py-16 px-4">
+        <div class="max-w-7xl mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-extrabold mb-4">Maine Gubernatorial Primary Analysis</h2>
+            <p class="text-lg md:text-xl text-blue-100 mb-8">Interactive Ranked Choice Voting Runoff Simulations</p>
+            <p class="text-blue-200 max-w-2xl mx-auto">Explore how Maine's Ranked Choice Voting system works by simulating voter preference transfers across Democratic and Republican primaries.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+
+        <!-- Democratic Primary Section -->
+        <section id="democratic" class="mb-16 scroll-mt-20">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-8">
+                    <h3 class="text-3xl font-bold text-white mb-2">Maine Democratic Gubernatorial Primary</h3>
+                    <p class="text-blue-100">Ranked Choice Voting (RCV) Interactive Runoff Model</p>
+                </div>
+                <div class="p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h4 class="text-lg font-bold text-slate-900 mb-3">About This Simulation</h4>
+                            <p class="text-slate-600 mb-4">
+                                Simulate the Maine Democratic primary runoff process. Watch as lower-performing candidates are eliminated and their votes redistributed according to voter second and third-choice preferences.
+                            </p>
+                            <ul class="text-sm text-slate-600 space-y-2">
+                                <li>✓ Interactive runoff simulation</li>
+                                <li>✓ Real-time vote tracking</li>
+                                <li>✓ Multiple transfer scenarios</li>
+                                <li>✓ Round-by-round analytics</li>
+                            </ul>
+                        </div>
+                        <div class="bg-blue-50 rounded-lg p-6 flex flex-col justify-center">
+                            <p class="text-sm text-blue-600 font-semibold mb-4">🔹 Status: Ready to Explore</p>
+                            <a href="Democratic_RCV.html" class="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition text-center">
+                                Launch Democratic Simulator →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Republican Primary Section -->
+        <section id="republican" class="mb-16 scroll-mt-20">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="bg-gradient-to-r from-red-700 to-red-900 px-8 py-8">
+                    <h3 class="text-3xl font-bold text-white mb-2">Maine Republican Gubernatorial Primary</h3>
+                    <p class="text-red-100">Ranked Choice Voting (RCV) Interactive Runoff Model</p>
+                </div>
+                <div class="p-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h4 class="text-lg font-bold text-slate-900 mb-3">About This Simulation</h4>
+                            <p class="text-slate-600 mb-4">
+                                Simulate the Maine Republican primary runoff process. Watch as lower-performing candidates are eliminated and their votes redistributed according to voter second and third-choice preferences.
+                            </p>
+                            <ul class="text-sm text-slate-600 space-y-2">
+                                <li>✓ Interactive runoff simulation</li>
+                                <li>✓ Real-time vote tracking</li>
+                                <li>✓ Multiple transfer scenarios</li>
+                                <li>✓ Round-by-round analytics</li>
+                            </ul>
+                        </div>
+                        <div class="bg-red-50 rounded-lg p-6 flex flex-col justify-center">
+                            <p class="text-sm text-red-600 font-semibold mb-4">🔹 Status: Ready to Explore</p>
+                            <a href="GOP_RCV.html" class="inline-block px-6 py-3 bg-red-700 hover:bg-red-800 text-white font-bold rounded-lg transition text-center">
+                                Launch Republican Simulator →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About RCV Section -->
+        <section id="about" class="mb-16 scroll-mt-20">
+            <div class="bg-gradient-to-br from-slate-100 to-slate-50 rounded-xl p-8">
+                <h3 class="text-3xl font-bold text-slate-900 mb-6">Understanding Ranked Choice Voting</h3>
                 
-                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-3">
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400">Live Race Metrics</h3>
-                    <div id="threshold-display" class="text-sm font-semibold text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                        Calculating threshold...
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <!-- How It Works -->
+                    <div class="bg-white rounded-lg p-6 shadow-sm">
+                        <div class="text-3xl mb-3">🗳️</div>
+                        <h4 class="font-bold text-slate-900 mb-3">How It Works</h4>
+                        <p class="text-sm text-slate-600">Voters rank candidates by preference (1st, 2nd, 3rd choice). If no candidate wins a majority in the first round, the lowest-performing candidate is eliminated and their votes are redistributed to voters' next preferences.</p>
                     </div>
-                    <div id="exhausted-display" class="text-sm font-semibold text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                        Exhausted Ballots: 0
+
+                    <!-- Key Benefits -->
+                    <div class="bg-white rounded-lg p-6 shadow-sm">
+                        <div class="text-3xl mb-3">✨</div>
+                        <h4 class="font-bold text-slate-900 mb-3">Key Benefits</h4>
+                        <p class="text-sm text-slate-600">RCV ensures the winner has majority support, gives voters more meaningful choices, reduces "vote splitting," and allows minority voices to be heard without being "wasted."</p>
+                    </div>
+
+                    <!-- Maine's System -->
+                    <div class="bg-white rounded-lg p-6 shadow-sm">
+                        <div class="text-3xl mb-3">🏛️</div>
+                        <h4 class="font-bold text-slate-900 mb-3">Maine's Implementation</h4>
+                        <p class="text-sm text-slate-600">Maine adopted RCV for federal elections in 2018 and expanded it to gubernatorial primaries. This automatic runoff system ensures winners have demonstrated majority support.</p>
                     </div>
                 </div>
 
-                <div id="control-panel" class="space-y-4">
-                    </div>
+                <!-- FAQ-style Content -->
+                <div class="space-y-4">
+                    <details class="group bg-white rounded-lg p-4 cursor-pointer">
+                        <summary class="font-bold text-slate-900 flex justify-between items-center">
+                            What happens if a ballot doesn't have a second choice?
+                            <span class="text-xl group-open:rotate-180 transition">▶</span>
+                        </summary>
+                        <p class="text-slate-600 text-sm mt-3">That ballot is considered "exhausted" and removed from future rounds. This is why the simulations allow you to specify the percentage of votes that become exhausted.</p>
+                    </details>
 
+                    <details class="group bg-white rounded-lg p-4 cursor-pointer">
+                        <summary class="font-bold text-slate-900 flex justify-between items-center">
+                            Why use these simulations?
+                            <span class="text-xl group-open:rotate-180 transition">▶</span>
+                        </summary>
+                        <p class="text-slate-600 text-sm mt-3">These tools let you explore different "what-if" scenarios. By adjusting how votes transfer between candidates, you can understand how different voter preferences would affect the final outcome.</p>
+                    </details>
+
+                    <details class="group bg-white rounded-lg p-4 cursor-pointer">
+                        <summary class="font-bold text-slate-900 flex justify-between items-center">
+                            How do I use the simulators?
+                            <span class="text-xl group-open:rotate-180 transition">▶</span>
+                        </summary>
+                        <p class="text-slate-600 text-sm mt-3">Click "Launch Democratic/Republican Simulator" above. When a candidate is eliminated, use the sliders to allocate their votes to other candidates. Try the "Equal Split" preset for balanced distribution or "Opponent Consolidation" to see strategic voting.</p>
+                    </details>
+                </div>
             </div>
-
-            <div class="lg:col-span-7 bg-white border border-slate-200 rounded-xl p-5 shadow-sm h-full flex flex-col justify-between">
-                <div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-1">Active Ballot Counts</h3>
-                    <p class="text-xs text-slate-500 mb-4">Dashed line represents current 50% target threshold of remaining active ballots.</p>
-                </div>
-                <div class="relative w-full h-80 lg:h-[400px]">
-                    <canvas id="rcvChart"></canvas>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="mt-8 bg-white border border-slate-200 rounded-xl p-5 shadow-sm overflow-x-auto">
-            <h3 class="text-lg font-bold text-slate-900 mb-4">Detailed Round-by-Round Progression</h3>
-            <table class="w-full text-left border-collapse" id="history-table">
-                </table>
-        </div>
+        </section>
 
     </main>
 
-    <footer class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400 py-8 border-t border-slate-200 mt-12">
-        Maine Democratic Gubernatorial Primary RCV App — Built for Streaming and Viewer Interaction.
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-300 mt-20 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h4 class="font-bold text-white mb-4">About This Site</h4>
+                    <p class="text-sm">North Yarmouth Notebook provides interactive tools for understanding Maine's Ranked Choice Voting system.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-4">Quick Links</h4>
+                    <ul class="text-sm space-y-2">
+                        <li><a href="#democratic" class="hover:text-white transition">Democratic Primary</a></li>
+                        <li><a href="#republican" class="hover:text-white transition">Republican Primary</a></li>
+                        <li><a href="#about" class="hover:text-white transition">Learn About RCV</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-4">Resources</h4>
+                    <ul class="text-sm space-y-2">
+                        <li><a href="https://github.com/JohnKFulton/NorthYarmouthNotebook" class="hover:text-white transition">GitHub Repository</a></li>
+                        <li><a href="https://maine.gov" class="hover:text-white transition">Maine Government</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 pt-8 text-center text-xs">
+                <p>&copy; 2026 North Yarmouth Notebook. Built with ❤️ for Maine civics education.</p>
+            </div>
+        </div>
     </footer>
 
     <script>
-        // Source data provided at 86% counted state
-        const initialCandidates = [
-            { id: 'shah', name: 'Nirav D. Shah', votes: 51707, active: true, color: 'rgba(59, 130, 246, 0.85)', borderColor: 'rgba(59, 130, 246, 1)' },
-            { id: 'pingree', name: 'Hannah M. Pingree', votes: 44738, active: true, color: 'rgba(236, 72, 153, 0.85)', borderColor: 'rgba(236, 72, 153, 1)' },
-            { id: 'jackson', name: 'Troy Dale Jackson', votes: 40437, active: true, color: 'rgba(245, 158, 11, 0.85)', borderColor: 'rgba(245, 158, 11, 1)' },
-            { id: 'bellows', name: 'Shenna Bellows', votes: 39842, active: true, color: 'rgba(16, 185, 129, 0.85)', borderColor: 'rgba(16, 185, 129, 1)' },
-            { id: 'king', name: 'Angus King III', votes: 15807, active: true, color: 'rgba(139, 92, 246, 0.85)', borderColor: 'rgba(139, 92, 246, 1)' }
-        ];
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
 
-        let candidates = [];
-        let exhaustedVotes = 0;
-        let currentRound = 1;
-        let history = [];
-        let chart = null;
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
 
-        // Custom Inline ChartJS Plugin to draw the 50% Target Runoff Line
-        const thresholdLinePlugin = {
-            id: 'thresholdLine',
-            afterDraw: (chart) => {
-                const { ctx, chartArea: { top, bottom, left, right }, scales: { x } } = chart;
-                if (!window.currentThresholdX) return;
-                const xPos = x.getPixelForValue(window.currentThresholdX);
-                if (xPos >= left && xPos <= right) {
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.lineWidth = 2;
-                    ctx.setLineDash([5, 5]);
-                    ctx.strokeStyle = '#ef4444';
-                    ctx.moveTo(xPos, top);
-                    ctx.lineTo(xPos, bottom);
-                    ctx.stroke();
-                    
-                    ctx.fillStyle = '#ef4444';
-                    ctx.font = 'bold 11px sans-serif';
-                    ctx.fillText('50% Threshold', xPos + 6, top + 14);
-                    ctx.restore();
-                }
-            }
-        };
-
-        function initChart() {
-            const ctx = document.getElementById('rcvChart').getContext('2d');
-            chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        data: [],
-                        backgroundColor: [],
-                        borderColor: [],
-                        borderWidth: 1.5,
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { beginAtZero: true, grid: { color: '#f1f5f9' } },
-                        y: { grid: { display: false }, ticks: { font: { weight: 'bold' } } }
-                    }
-                },
-                plugins: [thresholdLinePlugin]
+        // Close mobile menu when a link is clicked
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
             });
-        }
-
-        function resetSimulator() {
-            candidates = JSON.parse(JSON.stringify(initialCandidates));
-            exhaustedVotes = 0;
-            currentRound = 1;
-            history = [{
-                round: 1,
-                eliminatedId: null,
-                candidates: candidates.map(c => ({...c})),
-                exhausted: 0
-            }];
-            updateChart();
-            renderControls();
-            updateHistoryTable();
-        }
-
-        function updateChart() {
-            const currentRoundState = history[currentRound - 1].candidates;
-            const labels = [];
-            const data = [];
-            const bgColors = [];
-            const borderColors = [];
-
-            initialCandidates.forEach(initial => {
-                const currentData = currentRoundState.find(c => c.id === initial.id);
-                labels.push(initial.name);
-                data.push(currentData.votes);
-
-                const liveCand = candidates.find(c => c.id === initial.id);
-                if (liveCand.active) {
-                    bgColors.push(initial.color);
-                    borderColors.push(initial.borderColor);
-                } else {
-                    bgColors.push('rgba(226, 232, 240, 0.4)');
-                    borderColors.push('rgba(148, 163, 184, 0.3)');
-                }
-            });
-
-            chart.data.labels = labels;
-            chart.data.datasets[0].data = data;
-            chart.data.datasets[0].backgroundColor = bgColors;
-            chart.data.datasets[0].borderColor = borderColors;
-            chart.update();
-        }
-
-        function renderControls() {
-            const activeCandidates = candidates.filter(c => c.active);
-            const totalActiveVotes = activeCandidates.reduce((sum, c) => sum + c.votes, 0);
-            const threshold = Math.floor(totalActiveVotes / 2) + 1;
-            window.currentThresholdX = threshold;
-
-            document.getElementById('threshold-display').innerHTML = `🎯 <strong>Threshold to Win:</strong> ${threshold.toLocaleString()} votes`;
-            document.getElementById('exhausted-display').innerHTML = `💤 <strong>Exhausted Ballots:</strong> ${exhaustedVotes.toLocaleString()}`;
-
-            const controlPanel = document.getElementById('control-panel');
-            const highest = activeCandidates.reduce((max, c) => c.votes > max.votes ? c : max, activeCandidates[0]);
-
-            if (highest.votes >= threshold || activeCandidates.length === 1) {
-                const winner = highest.votes >= threshold ? highest : activeCandidates[0];
-                controlPanel.innerHTML = `
-                    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-6 text-center shadow-sm">
-                        <div class="text-4xl mb-2">🎉</div>
-                        <h3 class="text-xl font-bold text-emerald-900">Winner Declared!</h3>
-                        <p class="text-sm text-emerald-700 mt-1 mb-4"><strong>${winner.name}</strong> secured a true majority in Round ${currentRound}.</p>
-                        <button onclick="resetSimulator()" class="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-semibold transition">Reset Simulation</button>
-                    </div>
-                `;
-                return;
-            }
-
-            const lowest = activeCandidates.reduce((min, c) => c.votes < min.votes ? c : min, activeCandidates[0]);
-            const targets = activeCandidates.filter(c => c.id !== lowest.id);
-
-            let html = `
-                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
-                    <div>
-                        <div class="flex justify-between items-center">
-                            <span class="px-2.5 py-0.5 bg-blue-600 text-white font-bold rounded text-xs uppercase tracking-wider">Round ${currentRound} Runoff</span>
-                        </div>
-                        <h4 class="text-base font-bold text-slate-900 mt-2">Eliminating: <span class="text-red-600">${lowest.name}</span></h4>
-                        <p class="text-xs text-slate-500 mt-0.5">Distribute their <strong>${lowest.votes.toLocaleString()}</strong> transfer choices below (%) :</p>
-                    </div>
-                    <div class="space-y-3">
-            `;
-
-            targets.forEach(t => {
-                html += `
-                    <div class="flex justify-between items-center text-sm font-medium text-slate-700">
-                        <label for="input-${t.id}">→ Transfer to ${t.name}</label>
-                        <div class="flex items-center space-x-1.5">
-                            <input type="number" id="input-${t.id}" data-candidate-id="${t.id}" class="pct-input w-16 px-1.5 py-1 border border-slate-300 rounded text-right font-bold text-slate-900 focus:border-blue-500 focus:outline-none" min="0" max="100" step="1" value="0" oninput="updateAllocations()">
-                            <span class="text-slate-400 text-xs">%</span>
-                        </div>
-                    </div>
-                `;
-            });
-
-            html += `
-                    <div class="flex justify-between items-center text-sm font-medium text-slate-500 border-t border-slate-100 pt-3">
-                        <label for="input-exhausted">❌ Exhausted / Dropped Ballots</label>
-                        <div class="flex items-center space-x-1.5">
-                            <input type="number" id="input-exhausted" data-candidate-id="exhausted" class="pct-input w-16 px-1.5 py-1 border border-slate-300 rounded text-right font-bold text-slate-600 focus:border-blue-500 focus:outline-none" min="0" max="100" step="1" value="0" oninput="updateAllocations()">
-                            <span class="text-slate-400 text-xs">%</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-slate-100 border border-slate-200 rounded-lg p-3 flex flex-wrap gap-2 justify-center">
-                    <button onclick="presetEven()" class="px-3 py-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded text-xs font-semibold shadow-sm transition">Equal Split</button>
-            `;
-
-            const allianceIds = ['pingree', 'jackson', 'bellows'];
-            if (targets.some(t => allianceIds.includes(t.id))) {
-                html += `<button onclick="presetAlliance()" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-semibold shadow-sm transition">Alliance Pact Split</button>`;
-            }
-
-            html += `
-                </div>
-
-                <div class="pt-2 flex items-center justify-between">
-                    <div>
-                        <span class="text-sm font-bold text-slate-600">Sum Total:</span>
-                        <span id="total-pct" class="text-sm font-extrabold text-red-600 ml-1">0%</span>
-                    </div>
-                    <button id="submit-round" disabled onclick="processElimination('${lowest.id}')" class="px-5 py-2 bg-slate-400 text-white rounded-lg text-sm font-bold opacity-50 cursor-not-allowed shadow transition">
-                        Process Transfers →
-                    </button>
-                </div>
-                <p id="error-msg" class="text-xs text-red-500 font-medium text-center mt-1">Allocations must total exactly 100% to submit.</p>
-            </div>`;
-
-            controlPanel.innerHTML = html;
-            presetEven();
-        }
-
-        function updateAllocations() {
-            const inputs = document.querySelectorAll('.pct-input');
-            let total = 0;
-            inputs.forEach(input => { total += parseInt(input.value) || 0; });
-
-            const totalEl = document.getElementById('total-pct');
-            const submitBtn = document.getElementById('submit-round');
-            const errorMsg = document.getElementById('error-msg');
-
-            totalEl.innerText = total + '%';
-
-            if (total === 100) {
-                totalEl.className = "text-sm font-extrabold text-emerald-600 ml-1";
-                submitBtn.disabled = false;
-                submitBtn.className = "px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-bold shadow transition cursor-pointer";
-                errorMsg.classList.add('hidden');
-            } else {
-                totalEl.className = "text-sm font-extrabold text-red-600 ml-1";
-                submitBtn.disabled = true;
-                submitBtn.className = "px-5 py-2 bg-slate-400 text-white rounded-lg text-sm font-bold opacity-50 cursor-not-allowed shadow transition";
-                errorMsg.classList.remove('hidden');
-            }
-        }
-
-        function presetEven() {
-            const inputs = document.querySelectorAll('.pct-input');
-            const share = Math.floor(100 / inputs.length);
-            let remainder = 100 - (share * inputs.length);
-
-            inputs.forEach((input, index) => {
-                input.value = share + (index === inputs.length - 1 ? remainder : 0);
-            });
-            updateAllocations();
-        }
-
-        function presetAlliance() {
-            const inputs = document.querySelectorAll('.pct-input');
-            const allianceIds = ['pingree', 'jackson', 'bellows'];
-            
-            let allianceGroup = [];
-            let nonAllianceGroup = [];
-
-            inputs.forEach(input => {
-                if (allianceIds.includes(input.dataset.candidateId)) {
-                    allianceGroup.push(input);
-                } else {
-                    nonAllianceGroup.push(input);
-                }
-            });
-
-            if (allianceGroup.length > 0) {
-                // The progressive primary coalition targets 80% to allies, 20% to non-allies/exhausted
-                const allianceShare = Math.floor(80 / allianceGroup.length);
-                let allianceRemainder = 80 - (allianceShare * allianceGroup.length);
-                allianceGroup.forEach((input, idx) => {
-                    input.value = allianceShare + (idx === allianceGroup.length - 1 ? allianceRemainder : 0);
-                });
-
-                const nonAllianceShare = Math.floor(20 / nonAllianceGroup.length);
-                let nonAllianceRemainder = 20 - (nonAllianceShare * nonAllianceGroup.length);
-                nonAllianceGroup.forEach((input, idx) => {
-                    input.value = nonAllianceShare + (idx === nonAllianceGroup.length - 1 ? nonAllianceRemainder : 0);
-                });
-            } else {
-                presetEven();
-            }
-            updateAllocations();
-        }
-
-        function processElimination(lowestId) {
-            const inputs = document.querySelectorAll('.pct-input');
-            const lowestCand = candidates.find(c => c.id === lowestId);
-            const pool = lowestCand.votes;
-
-            inputs.forEach(input => {
-                const targetId = input.dataset.candidateId;
-                const pct = parseInt(input.value) || 0;
-                const addedVotes = Math.round((pct / 100) * pool);
-
-                if (targetId === 'exhausted') {
-                    exhaustedVotes += addedVotes;
-                } else {
-                    let targetCand = candidates.find(c => c.id === targetId);
-                    if (targetCand) targetCand.votes += addedVotes;
-                }
-            });
-
-            lowestCand.active = false;
-            lowestCand.votes = 0;
-
-            history[currentRound - 1].eliminatedId = lowestId;
-            history.push({
-                round: currentRound + 1,
-                eliminatedId: null,
-                candidates: candidates.map(c => ({...c})),
-                exhausted: exhaustedVotes
-            });
-
-            currentRound++;
-            updateChart();
-            renderControls();
-            updateHistoryTable();
-        }
-
-        function updateHistoryTable() {
-            const table = document.getElementById('history-table');
-            let html = `
-                <thead>
-                    <tr class="border-b border-slate-200 text-xs font-bold uppercase tracking-wider text-slate-500 bg-slate-50">
-                        <th class="py-3 px-4">Candidate Options</th>
-                        <th class="py-3 px-4 text-right">Round 1 (Initial)</th>
-            `;
-
-            for (let r = 2; r <= history.length; r++) {
-                html += `<th class="py-3 px-4 text-right">Round ${r} Runoff</th>`;
-            }
-            html += `</tr></thead><tbody class="text-sm font-medium">`;
-
-            initialCandidates.forEach(initial => {
-                html += `<tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                    <td class="py-3 px-4 text-slate-900 font-bold">${initial.name}</td>`;
-
-                for (let r = 1; r <= history.length; r++) {
-                    const snap = history[r - 1];
-                    const candSnap = snap.candidates.find(c => c.id === initial.id);
-                    const prevSnap = r > 1 ? history[r - 2] : null;
-
-                    if (prevSnap && prevSnap.eliminatedId === initial.id) {
-                        html += `<td class="py-3 px-4 text-right text-red-500 font-semibold italic bg-red-50/50">Eliminated</td>`;
-                    } else if (!candSnap.active && (r > 1 && history[r - 2].candidates.find(c => c.id === initial.id).active === false)) {
-                        html += `<td class="py-3 px-4 text-right text-slate-400 italic font-normal bg-slate-50/30">—</td>`;
-                    } else {
-                        html += `<td class="py-3 px-4 text-right text-slate-800">${candSnap.votes.toLocaleString()}</td>`;
-                    }
-                }
-                html += `</tr>`;
-            });
-
-            // Exhausted Row Element
-            html += `<tr class="bg-slate-100/80 font-bold text-slate-700">
-                <td class="py-3 px-4">Exhausted Ballots</td>
-                <td class="py-3 px-4 text-right font-medium text-slate-400">0</td>`;
-            for (let r = 2; r <= history.length; r++) {
-                html += `<td class="py-3 px-4 text-right">${history[r - 1].exhausted.toLocaleString()}</td>`;
-            }
-            html += `</tr></tbody>`;
-            table.innerHTML = html;
-        }
-
-        window.onload = function() {
-            initChart();
-            resetSimulator();
-        };
+        });
     </script>
+
 </body>
 </html>
