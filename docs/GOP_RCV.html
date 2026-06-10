@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maine Republican Gubernatorial Primary - RCV Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
+
+    <header class="bg-red-950 text-white py-6 shadow-md border-b border-red-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Maine Republican Gubernatorial Primary</h1>
+                    <p class="text-red-300 text-sm md:text-base mt-1 font-medium">Ranked Choice Voting (RCV) Interactive Runoff Model</p>
+                </div>
+                <a href="index.html" class="px-4 py-2 bg-red-700 hover:bg-red-800 text-white rounded-lg font-semibold transition text-sm">← Back to Hub</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <div class="bg-red-50 border-l-4 border-red-700 rounded-r-xl p-4 mb-8 shadow-sm">
+            <div class="flex items-start">
+                <div class="flex-shrink-0 text-red-700 font-bold text-xl mr-3">ℹ️</div>
+                <div>
+                    <h2 class="text-sm font-bold text-red-950 uppercase tracking-wider">Current Election Status (85% Reported)</h2>
+                    <p class="text-sm text-red-900 mt-1">Robert B. Charles leads initial first-choice selections with 42,347 votes out of 105,564 (37.2%). Because no candidate has crossed the critical majority threshold, the race triggers Maine's automated runoff rules. Use the configuration board below to simulate candidate eliminations.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <div class="lg:col-span-5 space-y-6">
+                
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-3">
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400">Live Race Metrics</h3>
+                    <div id="threshold-display" class="text-sm font-semibold text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                        Calculating threshold...
+                    </div>
+                    <div id="exhausted-display" class="text-sm font-semibold text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                        Exhausted Ballots: 0
+                    </div>
+                </div>
+
+                <div id="control-panel" class="space-y-4">
+                    </div>
+
+            </div>
+
+            <div class="lg:col-span-7 bg-white border border-slate-200 rounded-xl p-5 shadow-sm h-full flex flex-col justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-1">Active Ballot Counts</h3>
+                    <p class="text-xs text-slate-500 mb-4">Dashed line represents current 50% target threshold of remaining active ballots.</p>
+                </div>
+                <div class="relative w-full h-80 lg:h-[400px]">
+                    <canvas id="rcvChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-8 bg-white border border-slate-200 rounded-xl p-5 shadow-sm overflow-x-auto">
+            <h3 class="text-lg font-bold text-slate-900 mb-4">Detailed Round-by-Round Progression</h3>
+            <table class="w-full text-left border-collapse" id="history-table">
+                </table>
+        </div>
+
+    </main>
+
+    <footer class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400 py-8 border-t border-slate-200 mt-12">
+        Maine Republican Gubernatorial Primary RCV App — Designed for Streaming Presentation and Analysis.
+    </footer>
+
+    <script>
+        // Source data provided at 85% counted state
+        const initialCandidates = [
+            { id: 'charles', name: 'Robert B. Charles', votes: 42347, active: true, color: 'rgba(220, 38, 38, 0.85)', borderColor: 'rgba(220, 38, 38, 1)' },
+            { id: 'midgley', name: 'Benjamin T. Midgley', votes: 23038, active: true, color: 'rgba(59, 130, 246, 0.85)', borderColor: 'rgba(59, 130, 246, 1)' },
+            { id: 'bush', name: 'Jonathan J. Bush', votes: 22849, active: true, color: 'rgba(245, 158, 11, 0.85)', borderColor: 'rgba(245, 158, 11, 1)' },
+            { id: 'mason', name: 'Garrett Paul Mason', votes: 12871, active: true, color: 'rgba(16, 185, 129, 0.85)', borderColor: 'rgba(16, 185, 129, 1)' },
+            { id: 'mccarthy', name: 'Owen Z. McCarthy', votes: 4459, active: true, color: 'rgba(139, 92, 246, 0.85)', borderColor: 'rgba(139, 92, 246, 1)' }
+        ];
+
+        let candidates = [];
+        let exhaustedVotes = 0;
+        let currentRound = 1;
+        let history = [];
+        let chart = null;
+
+        // Custom Inline ChartJS Plugin to draw the 50% Target Runoff Line
+        const thresholdLinePlugin = {
+            id: 'thresholdLine',
+            afterDraw: (chart) => {
+                const { ctx, chartArea: { top, bottom, left, right }, scales: { x } } = chart;
+                if (!window.currentThresholdX) return;
+                const xPos = x.getPixelForValue(window.currentThresholdX);
+                if (xPos >= left && xPos <= right) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([5, 5]);
+                    ctx.strokeStyle = '#b91c1c';
+                    ctx.moveTo(xPos, top);
+                    ctx.lineTo(xPos, bottom);
+                    ctx.stroke();
+                    
+                    ctx.fillStyle = '#b91c1c';
+                    ctx.font = 'bold 11px sans-serif';
+                    ctx.fillText('50% Threshold', xPos + 6, top + 14);
+                    ctx.restore();
+                }
+            }
+        };
+
+        function initChart() {
+            const ctx = document.getElementById('rcvChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [],
+                        borderColor: [],
+                        borderWidth: 1.5,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                        y: { grid: { display: false }, ticks: { font: { weight: 'bold' } } }
+                    }
+                },
+                plugins: [thresholdLinePlugin]
+            });
+        }
+
+        function resetSimulator() {
+            candidates = JSON.parse(JSON.stringify(initialCandidates));
+            exhaustedVotes = 0;
+            currentRound = 1;
+            history = [{
+                round: 1,
+                eliminatedId: null,
+                candidates: candidates.map(c => ({...c})),
+                exhausted: 0
+            }];
+            updateChart();
+            renderControls();
+            updateHistoryTable();
+        }
+
+        function updateChart() {
+            const currentRoundState = history[currentRound - 1].candidates;
+            const labels = [];
+            const data = [];
+            const bgColors = [];
+            const borderColors = [];
+
+            initialCandidates.forEach(initial => {
+                const currentData = currentRoundState.find(c => c.id === initial.id);
+                labels.push(initial.name);
+                data.push(currentData.votes);
+
+                const liveCand = candidates.find(c => c.id === initial.id);
+                if (liveCand.active) {
+                    bgColors.push(initial.color);
+                    borderColors.push(initial.borderColor);
+                } else {
+                    bgColors.push('rgba(226, 232, 240, 0.4)');
+                    borderColors.push('rgba(148, 163, 184, 0.3)');
+                }
+            });
+
+            chart.data.labels = labels;
+            chart.data.datasets[0].data = data;
+            chart.data.datasets[0].backgroundColor = bgColors;
+            chart.data.datasets[0].borderColor = borderColors;
+            chart.update();
+        }
+
+        function renderControls() {
+            const activeCandidates = candidates.filter(c => c.active);
+            const totalActiveVotes = activeCandidates.reduce((sum, c) => sum + c.votes, 0);
+            const threshold = Math.floor(totalActiveVotes / 2) + 1;
+            window.currentThresholdX = threshold;
+
+            document.getElementById('threshold-display').innerHTML = `🎯 <strong>Threshold to Win:</strong> ${threshold.toLocaleString()} votes`;
+            document.getElementById('exhausted-display').innerHTML = `💤 <strong>Exhausted Ballots:</strong> ${exhaustedVotes.toLocaleString()}`;
+
+            const controlPanel = document.getElementById('control-panel');
+            const highest = activeCandidates.reduce((max, c) => c.votes > max.votes ? c : max, activeCandidates[0]);
+
+            if (highest.votes >= threshold || activeCandidates.length === 1) {
+                const winner = highest.votes >= threshold ? highest : activeCandidates[0];
+                controlPanel.innerHTML = `
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-6 text-center shadow-sm">
+                        <div class="text-4xl mb-2">🎉</div>
+                        <h3 class="text-xl font-bold text-emerald-900">Winner Declared!</h3>
+                        <p class="text-sm text-emerald-700 mt-1 mb-4"><strong>${winner.name}</strong> secured a true majority in Round ${currentRound}.</p>
+                        <button onclick="resetSimulator()" class="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-semibold transition">Reset Simulation</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const lowest = activeCandidates.reduce((min, c) => c.votes < min.votes ? c : min, activeCandidates[0]);
+            const targets = activeCandidates.filter(c => c.id !== lowest.id);
+
+            let html = `
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+                    <div>
+                        <div class="flex justify-between items-center">
+                            <span class="px-2.5 py-0.5 bg-red-700 text-white font-bold rounded text-xs uppercase tracking-wider">Round ${currentRound} Runoff</span>
+                        </div>
+                        <h4 class="text-base font-bold text-slate-900 mt-2">Eliminating: <span class="text-red-700">${lowest.name}</span></h4>
+                        <p class="text-xs text-slate-500 mt-0.5">Distribute their <strong>${lowest.votes.toLocaleString()}</strong> transfer choices below (%) :</p>
+                    </div>
+                    <div class="space-y-3">
+            `;
+
+            targets.forEach(t => {
+                html += `
+                    <div class="flex justify-between items-center text-sm font-medium text-slate-700">
+                        <label for="input-${t.id}">→ Transfer to ${t.name}</label>
+                        <div class="flex items-center space-x-1.5">
+                            <input type="number" id="input-${t.id}" data-candidate-id="${t.id}" class="pct-input w-16 px-1.5 py-1 border border-slate-300 rounded text-right font-bold text-slate-900 focus:border-red-700 focus:outline-none" min="0" max="100" step="1" value="0" oninput="updateAllocations()">
+                            <span class="text-slate-400 text-xs">%</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                    <div class="flex justify-between items-center text-sm font-medium text-slate-500 border-t border-slate-100 pt-3">
+                        <label for="input-exhausted">❌ Exhausted / Dropped Ballots</label>
+                        <div class="flex items-center space-x-1.5">
+                            <input type="number" id="input-exhausted" data-candidate-id="exhausted" class="pct-input w-16 px-1.5 py-1 border border-slate-300 rounded text-right font-bold text-slate-600 focus:border-red-700 focus:outline-none" min="0" max="100" step="1" value="0" oninput="updateAllocations()">
+                            <span class="text-slate-400 text-xs">%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-100 border border-slate-200 rounded-lg p-3 flex flex-wrap gap-2 justify-center">
+                    <button onclick="presetEven()" class="px-3 py-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded text-xs font-semibold shadow-sm transition">Equal Split</button>
+            `;
+
+            if (targets.some(t => t.id === 'charles')) {
+                html += `<button onclick="presetConsolidation()" class="px-3 py-1 bg-red-700 hover:bg-red-800 text-white rounded text-xs font-semibold shadow-sm transition">Opponent Consolidation</button>`;
+            }
+
+            html += `
+                </div>
+
+                <div class="pt-2 flex items-center justify-between">
+                    <div>
+                        <span class="text-sm font-bold text-slate-600">Sum Total:</span>
+                        <span id="total-pct" class="text-sm font-extrabold text-red-600 ml-1">0%</span>
+                    </div>
+                    <button id="submit-round" disabled onclick="processElimination('${lowest.id}')" class="px-5 py-2 bg-slate-400 text-white rounded-lg text-sm font-bold opacity-50 cursor-not-allowed shadow transition">
+                        Process Transfers →
+                    </button>
+                </div>
+                <p id="error-msg" class="text-xs text-red-500 font-medium text-center mt-1">Allocations must total exactly 100% to submit.</p>
+            </div>`;
+
+            controlPanel.innerHTML = html;
+            presetEven();
+        }
+
+        function updateAllocations() {
+            const inputs = document.querySelectorAll('.pct-input');
+            let total = 0;
+            inputs.forEach(input => { total += parseInt(input.value) || 0; });
+
+            const totalEl = document.getElementById('total-pct');
+            const submitBtn = document.getElementById('submit-round');
+            const errorMsg = document.getElementById('error-msg');
+
+            totalEl.innerText = total + '%';
+
+            if (total === 100) {
+                totalEl.className = "text-sm font-extrabold text-emerald-600 ml-1";
+                submitBtn.disabled = false;
+                submitBtn.className = "px-5 py-2 bg-red-700 hover:bg-red-800 text-white rounded-lg text-sm font-bold shadow transition cursor-pointer";
+                errorMsg.className = "hidden";
+            } else {
+                totalEl.className = "text-sm font-extrabold text-red-600 ml-1";
+                submitBtn.disabled = true;
+                submitBtn.className = "px-5 py-2 bg-slate-400 text-white rounded-lg text-sm font-bold opacity-50 cursor-not-allowed shadow transition";
+                errorMsg.className = "text-xs text-red-500 font-medium text-center mt-1";
+            }
+        }
+
+        function presetEven() {
+            const inputs = document.querySelectorAll('.pct-input');
+            const share = Math.floor(100 / inputs.length);
+            let remainder = 100 - (share * inputs.length);
+
+            inputs.forEach((input, index) => {
+                input.value = share + (index === inputs.length - 1 ? remainder : 0);
+            });
+            updateAllocations();
+        }
+
+        function presetConsolidation() {
+            const inputs = document.querySelectorAll('.pct-input');
+            let nonCharlesInputs = [];
+            let charlesInput = null;
+            let exhaustedInput = null;
+
+            inputs.forEach(input => {
+                if (input.dataset.candidateId === 'charles') charlesInput = input;
+                else if (input.dataset.candidateId === 'exhausted') exhaustedInput = input;
+                else nonCharlesInputs.push(input);
+            });
+
+            // Route 85% to alternative candidates, 15% to exhausted options, and 0% to the frontrunner
+            if (charlesInput) charlesInput.value = 0;
+            if (exhaustedInput) exhaustedInput.value = 15;
+
+            if (nonCharlesInputs.length > 0) {
+                const altShare = Math.floor(85 / nonCharlesInputs.length);
+                let altRemainder = 85 - (altShare * nonCharlesInputs.length);
+                nonCharlesInputs.forEach((input, idx) => {
+                    input.value = altShare + (idx === nonCharlesInputs.length - 1 ? altRemainder : 0);
+                });
+            }
+            updateAllocations();
+        }
+
+        function processElimination(lowestId) {
+            const inputs = document.querySelectorAll('.pct-input');
+            const lowestCand = candidates.find(c => c.id === lowestId);
+            const pool = lowestCand.votes;
+
+            inputs.forEach(input => {
+                const targetId = input.dataset.candidateId;
+                const pct = parseInt(input.value) || 0;
+                const addedVotes = Math.round((pct / 100) * pool);
+
+                if (targetId === 'exhausted') {
+                    exhaustedVotes += addedVotes;
+                } else {
+                    let targetCand = candidates.find(c => c.id === targetId);
+                    if (targetCand) targetCand.votes += addedVotes;
+                }
+            });
+
+            lowestCand.active = false;
+            lowestCand.votes = 0;
+
+            history[currentRound - 1].eliminatedId = lowestId;
+            history.push({
+                round: currentRound + 1,
+                eliminatedId: null,
+                candidates: candidates.map(c => ({...c})),
+                exhausted: exhaustedVotes
+            });
+
+            currentRound++;
+            updateChart();
+            renderControls();
+            updateHistoryTable();
+        }
+
+        function updateHistoryTable() {
+            const table = document.getElementById('history-table');
+            let html = `
+                <thead>
+                    <tr class="border-b border-slate-200 text-xs font-bold uppercase tracking-wider text-slate-500 bg-slate-50">
+                        <th class="py-3 px-4">Candidate Options</th>
+                        <th class="py-3 px-4 text-right">Round 1 (Initial)</th>
+            `;
+
+            for (let r = 2; r <= history.length; r++) {
+                html += `<th class="py-3 px-4 text-right">Round ${r} Runoff</th>`;
+            }
+            html += `</tr></thead><tbody class="text-sm font-medium">`;
+
+            initialCandidates.forEach(initial => {
+                html += `<tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-4 text-slate-900 font-bold">${initial.name}</td>`;
+
+                for (let r = 1; r <= history.length; r++) {
+                    const snap = history[r - 1];
+                    const candSnap = snap.candidates.find(c => c.id === initial.id);
+                    const prevSnap = r > 1 ? history[r - 2] : null;
+
+                    if (prevSnap && prevSnap.eliminatedId === initial.id) {
+                        html += `<td class="py-3 px-4 text-right text-red-500 font-semibold italic bg-red-50/50">Eliminated</td>`;
+                    } else if (!candSnap.active && (r > 1 && history[r - 2].candidates.find(c => c.id === initial.id).active === false)) {
+                        html += `<td class="py-3 px-4 text-right text-slate-400 italic font-normal bg-slate-50/30">—</td>`;
+                    } else {
+                        html += `<td class="py-3 px-4 text-right text-slate-800">${candSnap.votes.toLocaleString()}</td>`;
+                    }
+                }
+                html += `</tr>`;
+            });
+
+            // Exhausted Row Element
+            html += `<tr class="bg-slate-100/80 font-bold text-slate-700">
+                <td class="py-3 px-4">Exhausted Ballots</td>
+                <td class="py-3 px-4 text-right font-medium text-slate-400">0</td>`;
+            for (let r = 2; r <= history.length; r++) {
+                html += `<td class="py-3 px-4 text-right">${history[r - 1].exhausted.toLocaleString()}</td>`;
+            }
+            html += `</tr></tbody>`;
+            table.innerHTML = html;
+        }
+
+        window.onload = function() {
+            initChart();
+            resetSimulator();
+        };
+    </script>
+</body>
+</html>
